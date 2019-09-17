@@ -3,8 +3,10 @@ include build/common.mk
 
 PACK             := xyz
 PACKDIR          := sdk
-PROJECT          := github.com/pulumi/pulumi-${PACK}
-NODE_MODULE_NAME := @pulumi/${PACK}
+REPO_BASE        ?= github.com/pulumi
+PROJECT          := ${REPO_BASE}/pulumi-${PACK}
+NODE_MODULE_BASE ?= @pulumi
+NODE_MODULE_NAME := ${NODE_MODULE_BASE}/${PACK}
 TF_NAME          := ${PACK}
 
 TFGEN           := pulumi-tfgen-${PACK}
@@ -19,20 +21,21 @@ EMPTY_TO_AVOID_SED := ""
 
 prepare::
 	@if test -z "${NAME}"; then echo "NAME not set"; exit 1; fi
-	@if test -z "${REPOSITORY}"; then echo "REPOSITORY not set"; exit 1; fi
 	@if test ! -d "cmd/pulumi-tfgen-x${EMPTY_TO_AVOID_SED}yz"; then "Project already prepared"; exit 1; fi
 
 	mv "cmd/pulumi-tfgen-x${EMPTY_TO_AVOID_SED}yz" cmd/pulumi-tfgen-${NAME}
 	mv "cmd/pulumi-resource-x${EMPTY_TO_AVOID_SED}yz" cmd/pulumi-resource-${NAME}
 
 	if [[ "${OS}" != "Darwin" ]]; then \
-		sed -i 's,github.com/pulumi/pulumi-xyz,${REPOSITORY},g' go.mod; \
+		sed -i 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' go.mod; \
+		find ./ ! -path './.git/*' -type f -exec sed -i 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' {} \; &> /dev/null; \
 		find ./ ! -path './.git/*' -type f -exec sed -i 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
 	fi
 
 	# In MacOS the -i parameter needs an empty string to execute in place.
 	if [[ "${OS}" == "Darwin" ]]; then \
-		sed -i '' 's,github.com/pulumi/pulumi-xyz,${REPOSITORY},g' go.mod; \
+		sed -i '' 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' go.mod; \
+		find ./ ! -path './.git/*' -type f -exec sed -i '' 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' {} \; &> /dev/null; \
 		find ./ ! -path './.git/*' -type f -exec sed -i '' 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
 	fi
 
@@ -62,16 +65,16 @@ build:: tfgen provider
 		cd ./bin && $(PYTHON) setup.py build sdist
 
 tfgen::
-	go install -ldflags "-X github.com/pulumi/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${TFGEN}
+	go install -ldflags "-X ${PROJECT}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${TFGEN}
 
 provider::
-	go install -ldflags "-X github.com/pulumi/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
+	go install -ldflags "-X ${PROJECT}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
 
 lint::
 	golangci-lint run
 
 install::
-	GOBIN=$(PULUMI_BIN) go install -ldflags "-X github.com/pulumi/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
+	GOBIN=$(PULUMI_BIN) go install -ldflags "-X ${PROJECT}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
 	[ ! -e "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)" ] || rm -rf "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
 	mkdir -p "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
 	cp -r ${PACKDIR}/nodejs/bin/. "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
