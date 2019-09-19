@@ -41,7 +41,7 @@ func TestMountTarget(t *testing.T) {
 
 	baseJS := base.With(integration.ProgramTestOptions{
 		Dependencies: []string{
-			"@pulumi/grafana",
+			"@j-maxi/grafana",
 		},
 	})
 
