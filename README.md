@@ -43,13 +43,14 @@ In the root of the repository, run:
 - `GO111MODULE=on go get github.com/pulumi/pulumi-terraform@master`
 - `GO111MODULE=on go get github.com/terraform-providers/terraform-provider-grafana` (where `grafana` is the name of the provider)
 - `GO111MODULE=on go mod vendor`
-- `make ensure`
+- `GOPROXY=https://proxy.golang.org make ensure`
 
 ### Build the provider:
 
 - Edit `resources.go` to map each resource, and specify provider information
 - Enumerate any examples in `examples/examples_test.go`
-- `make`
+- `REPO_BASE=github.com/j-maxi NODE_MOBULE_BASE=j-maxi make build`
+- `./scripts/build-plugin.sh`
 
 ## Installing
 
