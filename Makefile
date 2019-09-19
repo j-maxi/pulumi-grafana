@@ -1,7 +1,7 @@
-PROJECT_NAME := xyz Package
+PROJECT_NAME := grafana Package
 include build/common.mk
 
-PACK             := xyz
+PACK             := grafana
 PACKDIR          := sdk
 REPO_BASE        ?= github.com/pulumi
 PROJECT          := ${REPO_BASE}/pulumi-${PACK}
@@ -27,15 +27,15 @@ prepare::
 	mv "cmd/pulumi-resource-x${EMPTY_TO_AVOID_SED}yz" cmd/pulumi-resource-${NAME}
 
 	if [[ "${OS}" != "Darwin" ]]; then \
-		sed -i 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' go.mod; \
-		find ./ ! -path './.git/*' -type f -exec sed -i 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' {} \; &> /dev/null; \
+		sed -i 's,github.com/j-maxi/pulumi-grafana,${PROJECT},g' go.mod; \
+		find ./ ! -path './.git/*' -type f -exec sed -i 's,github.com/j-maxi/pulumi-grafana,${PROJECT},g' {} \; &> /dev/null; \
 		find ./ ! -path './.git/*' -type f -exec sed -i 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
 	fi
 
 	# In MacOS the -i parameter needs an empty string to execute in place.
 	if [[ "${OS}" == "Darwin" ]]; then \
-		sed -i '' 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' go.mod; \
-		find ./ ! -path './.git/*' -type f -exec sed -i '' 's,github.com/pulumi/pulumi-xyz,${PROJECT},g' {} \; &> /dev/null; \
+		sed -i '' 's,github.com/j-maxi/pulumi-grafana,${PROJECT},g' go.mod; \
+		find ./ ! -path './.git/*' -type f -exec sed -i '' 's,github.com/j-maxi/pulumi-grafana,${PROJECT},g' {} \; &> /dev/null; \
 		find ./ ! -path './.git/*' -type f -exec sed -i '' 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
 	fi
 
