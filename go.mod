@@ -14,9 +14,6 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/pulumi/pulumi v0.17.28-0.20190731182900-6804d640fc7c
 	github.com/pulumi/pulumi-terraform v0.18.4-0.20190914112649-fc132172e90d
-	github.com/pulumi/scripts v0.0.0-20190914160500-e52bb56dbc41 // indirect
 	github.com/stretchr/testify v1.3.1-0.20190311161405-34c6fa2dc709
-	github.com/terraform-providers/terraform-provider-grafana v1.5.0 // indirect
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
-	golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7 // indirect
+	golang.org/x/net v0.7.0 // indirect
 )
